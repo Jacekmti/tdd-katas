@@ -86,4 +86,29 @@ class RoverPosition
             throw new InvalidRoverPositionExceptionAlias("Invalid y.");
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getX(): int
+    {
+        return $this->x;
+    }
+
+    /**
+     * @return int
+     */
+    public function getY(): int
+    {
+        return $this->y;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDirection(): string
+    {
+        return $this->direction;
+    }
+
 }

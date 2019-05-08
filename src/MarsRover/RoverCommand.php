@@ -50,4 +50,12 @@ class RoverCommand
             }
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getCommands(): array
+    {
+        return $this->commands;
+    }
 }
