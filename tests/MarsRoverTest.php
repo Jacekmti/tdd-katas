@@ -4,12 +4,11 @@ declare(strict_types = 1);
 
 namespace Test;
 
-use App\MarsRover\InvalidRoverPositionException;
-use App\MarsRover\MarsRover;
+use App\MarsRover\Exception\InvalidRoverCommandException;
+use App\MarsRover\Exception\InvalidRoverPositionException;
+use App\MarsRover\RoverCommand;
 use App\MarsRover\RoverPosition;
-use DomainException;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 
 /**
  * Class MarsRoverTest
@@ -24,30 +23,62 @@ class MarsRoverTest extends TestCase
         [0, 0, 0, 0],
     ];
 
-    public function roverProvider()
+    public function positionProvider()
     {
         return [
-          [[0,0], 'e', ['l','b'], false],
-          [[-1,-1], 'Ó', ['l','b'], true]
+          [0, 0, 'e', true],
+          [-1, -1, "Ó", false]
+        ];
+    }
+
+    public function commandProvider()
+    {
+        return [
+          [['f','l','r','b'], true],
+          [['3', 'T'], false]
         ];
     }
 
     /**
-     * @dataProvider roverProvider
-     * @param $position
+     * @dataProvider positionProvider
+     *
+     * @param $x
+     * @param $y
      * @param $direction
-     * @param $command
-     * @param $expectException
+     * @param $shouldPass
+     *
      * @throws InvalidRoverPositionException
      */
-    public function testRoverPosition($position, $direction, $command, $expectException)
+    public function testRoverPosition($x, $y, $direction, $shouldPass)
     {
-        if (!$expectException) {
-            $roverPosition = new RoverPosition($position, $direction);
+        if ($shouldPass) {
+            $roverPosition = new RoverPosition($x, $y, $direction);
             $this->assertTrue($roverPosition instanceof RoverPosition);
         } else {
             $this->expectException(InvalidRoverPositionException::class);
-            new RoverPosition($position, $direction);
+            new RoverPosition($x, $y, $direction);
         }
     }
+    //TODO: typeError
+
+    /**
+     * @dataProvider commandProvider
+     *
+     * @param $command
+     * @param $shouldPass
+     *
+     * @throws InvalidRoverCommandException
+     */
+    public function testRoverCommand($command, $shouldPass)
+    {
+        if ($shouldPass) {
+            $command = new RoverCommand($command);
+            $this->assertTrue($command instanceof RoverCommand);
+        } else {
+            $this->expectException(InvalidRoverCommandException::class);
+            new RoverCommand($command);
+        }
+    }
+
+    //TODO: typeError
 }

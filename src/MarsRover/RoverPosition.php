@@ -2,65 +2,88 @@
 
 namespace App\MarsRover;
 
+use App\MarsRover\Exception\InvalidRoverPositionException as InvalidRoverPositionExceptionAlias;
+
+/**
+ * Class RoverPosition
+ *
+ * @package App\MarsRover
+ */
 class RoverPosition
 {
     /**
-     * @var array
+     * @var int
      */
-    private $position;
+    private $x;
+
+    /**
+     * @var int
+     */
+    private $y;
 
     /**
      * @var string
      */
     private $direction;
 
+    /**
+     * @var array
+     */
     const DIRECTIONS = ['n', 'w', 's', 'e'];
-    
+
     /**
      * RoverPosition constructor.
-     * @param array  $position
+     *
+     * @param int    $x
+     * @param int    $y
      * @param string $direction
-     * @throws InvalidRoverPositionException
+     *
+     * @throws InvalidRoverPositionExceptionAlias
      */
-    public function __construct(array $position, string $direction)
+    public function __construct(int $x, int $y, string $direction)
     {
-        $this->position = $position;
+        $this->x = $x;
+        $this->y = $y;
         $this->direction = $direction;
 
         $this->validate();
     }
 
     /**
-     * @throws InvalidRoverPositionException
+     * Validate rover position and direction parameters.
+     *
+     * @throws InvalidRoverPositionExceptionAlias
      */
     private function validate()
     {
-        $this->validatePosition();
+        $this->validateCoordinates();
         $this->validateDirection();
     }
 
     /**
-     * @throws InvalidRoverPositionException
+     * Validate direction.
+     *
+     * @throws InvalidRoverPositionExceptionAlias
      */
     private function validateDirection()
     {
         if (!in_array($this->direction, self::DIRECTIONS)) {
-            throw new InvalidRoverPositionException("Invalid direction.");
+            throw new InvalidRoverPositionExceptionAlias("Invalid direction.");
         }
     }
 
     /**
-     * @throws InvalidRoverPositionException
+     * Validate position coordinates.
+     *
+     * @throws InvalidRoverPositionExceptionAlias
      */
-    private function validatePosition()
+    private function validateCoordinates()
     {
-        if (!isset($this->position[0]) || ($this->position[0] < 0
-                && $this->position[0] > GridConstantsInterface::GRID_WIDTH)) {
-            throw new InvalidRoverPositionException("Invalid x.");
+        if ($this->x < 0 && $this->x > GridConstantsInterface::GRID_WIDTH) {
+            throw new InvalidRoverPositionExceptionAlias("Invalid x.");
         }
-        if (!isset($this->position[1]) || ($this->position[1] < 0
-                && $this->position[1] > GridConstantsInterface::GRID_HEIGHT)) {
-            throw new InvalidRoverPositionException("Invalid y.");
+        if ($this->y < 0 && $this->y > GridConstantsInterface::GRID_HEIGHT) {
+            throw new InvalidRoverPositionExceptionAlias("Invalid y.");
         }
     }
 }
