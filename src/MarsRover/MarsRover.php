@@ -12,6 +12,16 @@ namespace App\MarsRover;
 class MarsRover
 {
     /**
+     * @var string
+     */
+    const ROVER_READY = 'Rover ready!';
+
+    /**
+     * @var string
+     */
+    const ROVER_COLLISION_DETECTED = 'Collision detected!';
+
+    /**
      * @var array
      */
     private $grid;
@@ -20,6 +30,11 @@ class MarsRover
      * @var RoverPosition
      */
     private $roverPosition;
+
+    /**
+     * @var string
+     */
+    private $status;
 
     /**
      * MarsRover constructor.
@@ -31,6 +46,7 @@ class MarsRover
     {
         $this->grid = $grid;
         $this->roverPosition = $roverPosition;
+        $this->status = self::ROVER_READY;
     }
 
     /**
@@ -45,6 +61,9 @@ class MarsRover
         $commands = $commandList->getCommands();
 
         foreach ($commands as $command) {
+            if ($this->status === self::ROVER_COLLISION_DETECTED) {
+                break;
+            }
             if ($command == GridConstantsInterface::COMMAND_TURN_LEFT
                 || $command == GridConstantsInterface::COMMAND_TURN_RIGHT) {
                 $this->rotate($command);
@@ -57,7 +76,7 @@ class MarsRover
     /**
      * @return RoverPosition
      */
-    public function getPosition()
+    public function getPosition(): RoverPosition
     {
         return $this->roverPosition;
     }
@@ -109,6 +128,11 @@ class MarsRover
             }
         }
 
+        if ($this->grid[$x][$y] == GridConstantsInterface::GRID_OBSTACLE) {
+            $this->status = self::ROVER_COLLISION_DETECTED;
+            return;
+        }
+
         $this->roverPosition = new RoverPosition(
             $x,
             $y,
@@ -143,5 +167,13 @@ class MarsRover
             $this->roverPosition->getY(),
             $direction
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 }

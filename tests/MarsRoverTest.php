@@ -47,7 +47,16 @@ class MarsRoverTest extends TestCase
         return [
             [0, 0, 'n', ['r', 'f', 'r', 'f'], 1, 1, 's'],
             [0, 0, 'n', ['l', 'l'], 0, 0, 's'],
-            [1, 0, 'w', ['f', 'b' ,'l', 'r'], 1, 0, 'w']
+            [1, 0, 'w', ['f', 'b', 'l', 'r'], 1, 0, 'w']
+        ];
+    }
+
+    public function collisionNavigateProvider()
+    {
+        return [
+            [0, 0, 'n', ['r', 'f'], 0, 1, 'e', false],
+            [0, 0, 'n', ['r', 'f', 'f'], 0, 1, 'e', true],
+            [0, 0, 'n', ['r', 'f', 'f', 'f', 'r', 'f'], 0, 1, 'e', true]
         ];
     }
 
@@ -129,5 +138,41 @@ class MarsRoverTest extends TestCase
         $targetPosition = new RoverPosition($targetX, $targetY, $targetDirection);
 
         $this->assertEquals($rover->getPosition(), $targetPosition);
+    }
+
+    /**
+     * @dataProvider collisionNavigateProvider
+     *
+     * @param $startX
+     * @param $startY
+     * @param $startDirection
+     * @param $command
+     * @param $targetX
+     * @param $targetY
+     * @param $targetDirection
+     *
+     * @param $collisionExpected
+     *
+     * @throws InvalidRoverCommandException
+     * @throws InvalidRoverPositionException
+     */
+    public function testRoverCollision(
+        $startX,
+        $startY,
+        $startDirection,
+        $command,
+        $targetX,
+        $targetY,
+        $targetDirection,
+        $collisionExpected
+    ) {
+        $rover = new MarsRover($this->grid, new RoverPosition($startX, $startY, $startDirection));
+        $rover->navigate(new RoverCommandList($command));
+        $targetPosition = new RoverPosition($targetX, $targetY, $targetDirection);
+        $this->assertEquals($rover->getPosition(), $targetPosition);
+
+        if ($collisionExpected) {
+            $this->assertEquals('Collision detected!', $rover->getStatus());
+        }
     }
 }

@@ -23,4 +23,6 @@ interface GridConstantsInterface
         self::SOUTH,
         self::WEST
     ];
+
+    const GRID_OBSTACLE = 1;
 }
