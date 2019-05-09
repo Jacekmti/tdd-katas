@@ -60,6 +60,16 @@ class MarsRoverTest extends TestCase
         ];
     }
 
+    public function wrapNavigateProvider()
+    {
+        return [
+            [0, 0, 'n', ['f'], 3, 0, 'n'],
+            [0, 0, 'n', ['r', 'b'], 0, 3, 'e'],
+            [0, 0, 'n', ['r', 'r', 'f', 'f', 'r', 'f'], 2, 3, 'w'],
+            [0, 0, 'n', ['r', 'r', 'f', 'f', 'f', 'f', 'f'], 1, 0, 's'],
+        ];
+    }
+
     protected function setUp()
     {
         $this->grid = [
@@ -112,6 +122,7 @@ class MarsRoverTest extends TestCase
 
     /**
      * @dataProvider basicNavigateProvider
+     * @dataProvider wrapNavigateProvider
      *
      * @param $startX
      * @param $startY

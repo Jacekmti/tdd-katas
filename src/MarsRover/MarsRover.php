@@ -36,6 +36,9 @@ class MarsRover
      */
     private $status;
 
+    private $gridHeight;
+    private $gridWidth;
+
     /**
      * MarsRover constructor.
      *
@@ -47,6 +50,7 @@ class MarsRover
         $this->grid = $grid;
         $this->roverPosition = $roverPosition;
         $this->status = self::ROVER_READY;
+        $this->setGridSize($grid);
     }
 
     /**
@@ -81,6 +85,12 @@ class MarsRover
         return $this->roverPosition;
     }
 
+    private function setGridSize($grid)
+    {
+        $this->gridWidth = count($grid) - 1;
+        $this->gridHeight = count($grid[0]) - 1;
+    }
+
     /**
      * Moves rover.
      *
@@ -98,15 +108,27 @@ class MarsRover
             switch ($direction) {
                 case GridConstantsInterface::NORTH:
                     $x -= 1;
+                    if ($x < 0 ) {
+                        $x = $this->gridHeight;
+                    }
                     break;
                 case GridConstantsInterface::WEST:
                     $y -= 1;
+                    if ($y < 0) {
+                        $y = $this->gridWidth;
+                    }
                     break;
                 case GridConstantsInterface::SOUTH:
                     $x += 1;
+                    if ($x > $this->gridHeight) {
+                      $x = 0;
+                    }
                     break;
                 case GridConstantsInterface::EAST:
                     $y += 1;
+                    if ($y > $this->gridWidth) {
+                        $y = 0;
+                    }
                     break;
             }
         }
@@ -115,15 +137,27 @@ class MarsRover
             switch ($direction) {
                 case GridConstantsInterface::NORTH:
                     $x += 1;
+                    if ($x > $this->gridHeight) {
+                        $x = 0;
+                    }
                     break;
                 case GridConstantsInterface::WEST:
                     $y += 1;
+                    if ($y > $this->gridWidth) {
+                        $y = 0;
+                    }
                     break;
                 case GridConstantsInterface::SOUTH:
                     $x -= 1;
+                    if ($x < 0) {
+                        $x = $this->gridHeight;
+                    }
                     break;
                 case GridConstantsInterface::EAST:
                     $y -= 1;
+                    if ($y < 0) {
+                        $y = $this->gridWidth;
+                    }
                     break;
             }
         }
