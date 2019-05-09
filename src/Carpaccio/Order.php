@@ -7,6 +7,11 @@ namespace App\Carpaccio;
 use App\Carpaccio\Exception\WrongPriceException;
 use App\Carpaccio\Exception\WrongQuantityException;
 
+/**
+ * Class Order
+ *
+ * @package App\Carpaccio
+ */
 class Order
 {
     /**
@@ -39,12 +44,8 @@ class Order
         $this->price = $price;
         $this->qty = $qty;
         $this->state = $state;
-        if ($price < 0) {
-            throw new WrongPriceException();
-        }
-        if ($qty < 0) {
-            throw new WrongQuantityException();
-        }
+
+        $this->validate();
     }
 
     /**
@@ -53,5 +54,20 @@ class Order
     public function getValue()
     {
         return $this->price * $this->qty;
+    }
+
+    /**
+     * @throws WrongPriceException
+     * @throws WrongQuantityException
+     */
+    private function validate()
+    {
+        if ($this->price < 0) {
+            throw new WrongPriceException();
+        }
+
+        if ($this->qty < 0) {
+            throw new WrongQuantityException();
+        }
     }
 }

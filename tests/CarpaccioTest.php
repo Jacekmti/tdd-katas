@@ -71,6 +71,9 @@ class CarpaccioTest extends TestCase
      *
      * @param $price
      * @param $expected
+     *
+     * @throws WrongPriceException
+     * @throws WrongQuantityException
      */
     public function testItemPrice($price, $expected)
     {
@@ -83,6 +86,9 @@ class CarpaccioTest extends TestCase
      *
      * @param $quantity
      * @param $expected
+     *
+     * @throws WrongPriceException
+     * @throws WrongQuantityException
      */
     public function testItemQuantity($quantity, $expected)
     {
@@ -96,6 +102,9 @@ class CarpaccioTest extends TestCase
      * @param $price
      * @param $expected
      * @param $exception
+     *
+     * @throws WrongPriceException
+     * @throws WrongQuantityException
      */
     public function testValidatePrice($price, $expected, $exception = '')
     {
@@ -114,6 +123,9 @@ class CarpaccioTest extends TestCase
      * @param $qty
      * @param $expected
      * @param $exception
+     *
+     * @throws WrongPriceException
+     * @throws WrongQuantityException
      */
     public function testValidateQty($qty, $expected, $exception = '')
     {
