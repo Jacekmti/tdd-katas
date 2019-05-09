@@ -17,7 +17,10 @@ class RoverCommandList
      * @var array
      */
     const VALID_COMMANDS = [
-        'l', 'r', 'f', 'b'
+        GridConstantsInterface::COMMAND_TURN_LEFT,
+        GridConstantsInterface::COMMAND_TURN_RIGHT,
+        GridConstantsInterface::COMMAND_MOVE_FORWARD,
+        GridConstantsInterface::COMMAND_MOVE_BACKWARD
     ];
 
     /**
