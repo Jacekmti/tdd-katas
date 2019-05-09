@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\MarsRover;
 
+use App\MarsRover\Exception\InvalidRoverPositionException;
+
 /**
  * Class MarsRover
  *
@@ -41,12 +43,16 @@ class MarsRover
      *
      * @param array         $grid
      * @param RoverPosition $roverPosition
+     *
+     * @throws InvalidRoverPositionException
      */
     public function __construct(array $grid, RoverPosition $roverPosition)
     {
         $this->grid = $grid;
         $this->roverPosition = $roverPosition;
         $this->status = self::ROVER_READY;
+
+        $this->validate();
     }
 
     /**
@@ -173,7 +179,7 @@ class MarsRover
     }
 
     /**
-     * Corrects coordinates, wraps them around grid (when out of bounds)
+     * Corrects coordinates, wraps them around grid (when out of bounds).
      *
      * @param int $value
      * @param int $max
@@ -193,5 +199,28 @@ class MarsRover
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    /**
+     * Validate rover position on grid.
+     *
+     * @throws InvalidRoverPositionException
+     */
+    private function validate()
+    {
+        $x = $this->roverPosition->getX();
+        $y = $this->roverPosition->getY();
+
+        if ($x < 0 || $x > count($this->grid) -1) {
+            throw new InvalidRoverPositionException('Invalid rover grid position.');
+        }
+
+        if ($y < 0 || $y > count($this->grid[0]) -1) {
+            throw new InvalidRoverPositionException('Invalid rover grid position.');
+        }
+
+        if ($this->grid[$x][$y] === GridConstantsInterface::GRID_OBSTACLE) {
+            throw new InvalidRoverPositionException('Rover can\'t land on obstacle.');
+        }
     }
 }

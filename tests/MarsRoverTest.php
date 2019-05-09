@@ -70,6 +70,18 @@ class MarsRoverTest extends TestCase
         ];
     }
 
+    public function startPositionProvider()
+    {
+        return [
+            [3, 2, 'n'],
+            [0, 0, 'd', InvalidRoverPositionException::class],
+            [2, 1, 'n', InvalidRoverPositionException::class],
+            [-1, 0, 'n', InvalidRoverPositionException::class],
+            ['0', '0', 's', TypeError::class],
+            [[], 2.5, 's', TypeError::class]
+        ];
+    }
+
     protected function setUp()
     {
         $this->grid = [
@@ -163,6 +175,27 @@ class MarsRoverTest extends TestCase
 
         if ($collisionExpected) {
             $this->assertEquals('Collision detected!', $rover->getStatus());
+        }
+    }
+
+    /**
+     * @dataProvider startPositionProvider
+     *
+     * @param $x
+     * @param $y
+     * @param $direction
+     * @param $exception
+     *
+     * @throws InvalidRoverPositionException
+     */
+    public function testRoverStartPosition($x, $y, $direction, $exception = '')
+    {
+        if ($exception) {
+            $this->expectException($exception);
+            new MarsRover($this->grid, new RoverPosition($x, $y, $direction));
+        } else {
+            $rover = new MarsRover($this->grid, new RoverPosition($x, $y, $direction));
+            $this->assertInstanceOf(MarsRover::class, $rover);
         }
     }
 }
