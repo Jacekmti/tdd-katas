@@ -47,7 +47,8 @@ class MarsRoverTest extends TestCase
         return [
             [0, 0, 'n', ['r', 'f', 'r', 'f'], 1, 1, 's'],
             [0, 0, 'n', ['l', 'l'], 0, 0, 's'],
-            [1, 0, 'w', ['f', 'b', 'l', 'r'], 1, 0, 'w']
+            [1, 0, 'w', ['f', 'b', 'l', 'r'], 1, 0, 'w'],
+            [0, 0, 'n', ['b', 'b', 'l', 'l', 'b'], 1, 0, 's']
         ];
     }
 
@@ -77,6 +78,7 @@ class MarsRoverTest extends TestCase
             [0, 0, 'd', InvalidRoverPositionException::class],
             [2, 1, 'n', InvalidRoverPositionException::class],
             [-1, 0, 'n', InvalidRoverPositionException::class],
+            [1, -100, 'n', InvalidRoverPositionException::class],
             ['0', '0', 's', TypeError::class],
             [[], 2.5, 's', TypeError::class]
         ];
