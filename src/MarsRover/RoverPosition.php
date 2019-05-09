@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\MarsRover;
 
-use App\MarsRover\Exception\InvalidRoverPositionException as InvalidRoverPositionExceptionAlias;
+use App\MarsRover\Exception\InvalidRoverPositionException;
 
 /**
  * Class RoverPosition
@@ -31,7 +31,12 @@ class RoverPosition
     /**
      * @var array
      */
-    const DIRECTIONS = ['n', 'w', 's', 'e'];
+    const DIRECTIONS = [
+        GridConstantsInterface::NORTH,
+        GridConstantsInterface::EAST,
+        GridConstantsInterface::SOUTH,
+        GridConstantsInterface::WEST
+    ];
 
     /**
      * RoverPosition constructor.
@@ -40,7 +45,7 @@ class RoverPosition
      * @param int    $y
      * @param string $direction
      *
-     * @throws InvalidRoverPositionExceptionAlias
+     * @throws InvalidRoverPositionException
      */
     public function __construct(int $x, int $y, string $direction)
     {
@@ -52,40 +57,14 @@ class RoverPosition
     }
 
     /**
-     * Validate rover position and direction parameters.
+     * Validate rover direction.
      *
-     * @throws InvalidRoverPositionExceptionAlias
+     * @throws InvalidRoverPositionException
      */
     private function validate()
     {
-        $this->validateCoordinates();
-        $this->validateDirection();
-    }
-
-    /**
-     * Validate direction.
-     *
-     * @throws InvalidRoverPositionExceptionAlias
-     */
-    private function validateDirection()
-    {
         if (!in_array($this->direction, self::DIRECTIONS)) {
-            throw new InvalidRoverPositionExceptionAlias("Invalid direction.");
-        }
-    }
-
-    /**
-     * Validate position coordinates.
-     *
-     * @throws InvalidRoverPositionExceptionAlias
-     */
-    private function validateCoordinates()
-    {
-        if ($this->x < 0 && $this->x > GridConstantsInterface::GRID_WIDTH) {
-            throw new InvalidRoverPositionExceptionAlias("Invalid x.");
-        }
-        if ($this->y < 0 && $this->y > GridConstantsInterface::GRID_HEIGHT) {
-            throw new InvalidRoverPositionExceptionAlias("Invalid y.");
+            throw new InvalidRoverPositionException("Invalid direction.");
         }
     }
 

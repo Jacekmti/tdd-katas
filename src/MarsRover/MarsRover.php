@@ -36,9 +36,6 @@ class MarsRover
      */
     private $status;
 
-    private $gridHeight;
-    private $gridWidth;
-
     /**
      * MarsRover constructor.
      *
@@ -50,7 +47,6 @@ class MarsRover
         $this->grid = $grid;
         $this->roverPosition = $roverPosition;
         $this->status = self::ROVER_READY;
-        $this->setGridSize($grid);
     }
 
     /**
@@ -85,12 +81,6 @@ class MarsRover
         return $this->roverPosition;
     }
 
-    private function setGridSize($grid)
-    {
-        $this->gridWidth = count($grid) - 1;
-        $this->gridHeight = count($grid[0]) - 1;
-    }
-
     /**
      * Moves rover.
      *
@@ -104,31 +94,22 @@ class MarsRover
         $x = $this->roverPosition->getX();
         $y = $this->roverPosition->getY();
 
+        $gridWidth = count($this->grid) - 1;
+        $gridHeight = count($this->grid[0]) - 1;
+
         if ($command == GridConstantsInterface::COMMAND_MOVE_FORWARD) {
             switch ($direction) {
                 case GridConstantsInterface::NORTH:
-                    $x -= 1;
-                    if ($x < 0 ) {
-                        $x = $this->gridHeight;
-                    }
+                    $x--;
                     break;
                 case GridConstantsInterface::WEST:
-                    $y -= 1;
-                    if ($y < 0) {
-                        $y = $this->gridWidth;
-                    }
+                    $y--;
                     break;
                 case GridConstantsInterface::SOUTH:
-                    $x += 1;
-                    if ($x > $this->gridHeight) {
-                      $x = 0;
-                    }
+                    $x++;
                     break;
                 case GridConstantsInterface::EAST:
-                    $y += 1;
-                    if ($y > $this->gridWidth) {
-                        $y = 0;
-                    }
+                    $y++;
                     break;
             }
         }
@@ -136,28 +117,16 @@ class MarsRover
         if ($command == GridConstantsInterface::COMMAND_MOVE_BACKWARD) {
             switch ($direction) {
                 case GridConstantsInterface::NORTH:
-                    $x += 1;
-                    if ($x > $this->gridHeight) {
-                        $x = 0;
-                    }
+                    $x++;
                     break;
                 case GridConstantsInterface::WEST:
-                    $y += 1;
-                    if ($y > $this->gridWidth) {
-                        $y = 0;
-                    }
+                    $y++;
                     break;
                 case GridConstantsInterface::SOUTH:
-                    $x -= 1;
-                    if ($x < 0) {
-                        $x = $this->gridHeight;
-                    }
+                    $x--;
                     break;
                 case GridConstantsInterface::EAST:
-                    $y -= 1;
-                    if ($y < 0) {
-                        $y = $this->gridWidth;
-                    }
+                    $y--;
                     break;
             }
         }
@@ -168,8 +137,8 @@ class MarsRover
         }
 
         $this->roverPosition = new RoverPosition(
-            $x,
-            $y,
+            $this->correctPosition($x, $gridHeight),
+            $this->correctPosition($y, $gridWidth),
             $direction
         );
     }
@@ -201,6 +170,21 @@ class MarsRover
             $this->roverPosition->getY(),
             $direction
         );
+    }
+
+    /**
+     * Corrects coordinates, wraps them around grid (when out of bounds)
+     *
+     * @param int $value
+     * @param int $max
+     *
+     * @return int
+     */
+    private function correctPosition(int $value, int $max): int
+    {
+        $value = $value > $max ? 0 : $value;
+        $value = $value < 0 ? $max : $value;
+        return $value;
     }
 
     /**

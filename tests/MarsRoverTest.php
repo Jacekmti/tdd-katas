@@ -81,27 +81,6 @@ class MarsRoverTest extends TestCase
     }
 
     /**
-     * @dataProvider positionProvider
-     *
-     * @param $x
-     * @param $y
-     * @param $direction
-     * @param $exception
-     *
-     * @throws InvalidRoverPositionException
-     */
-    public function testRoverPosition($x, $y, $direction, $exception = '')
-    {
-        if ($exception) {
-            $this->expectException($exception);
-            new RoverPosition($x, $y, $direction);
-        } else {
-            $roverPosition = new RoverPosition($x, $y, $direction);
-            $this->assertTrue($roverPosition instanceof RoverPosition);
-        }
-    }
-
-    /**
      * @dataProvider commandProvider
      *
      * @param $command
