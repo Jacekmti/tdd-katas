@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\MarsRover;
 
 use App\MarsRover\Exception\InvalidRoverCommandException;
 
 /**
- * Class RoverCommand
+ * Class RoverCommandList
  *
  * @package App\MarsRover
  */
-class RoverCommand
+class RoverCommandList
 {
     /**
      * @var array
@@ -24,7 +26,7 @@ class RoverCommand
     private $commands;
 
     /**
-     * RoverCommand constructor.
+     * RoverCommandList constructor.
      *
      * @param array $commands
      *

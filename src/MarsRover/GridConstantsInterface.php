@@ -13,7 +13,7 @@ interface GridConstantsInterface
     const COMMAND_MOVE_BACKWARD = 'b';
 
     const NORTH = 'n';
-    const EAST  = 'e';
+    const EAST = 'e';
     const SOUTH = 's';
     const WEST = 'w';
 

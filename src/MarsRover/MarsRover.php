@@ -11,10 +11,22 @@ namespace App\MarsRover;
  */
 class MarsRover
 {
+    /**
+     * @var array
+     */
     private $grid;
+
+    /**
+     * @var RoverPosition
+     */
     private $roverPosition;
 
-
+    /**
+     * MarsRover constructor.
+     *
+     * @param array         $grid
+     * @param RoverPosition $roverPosition
+     */
     public function __construct(array $grid, RoverPosition $roverPosition)
     {
         $this->grid = $grid;
@@ -22,71 +34,91 @@ class MarsRover
     }
 
     /**
-     * @param RoverCommand $command
+     * Navigates rover.
+     *
+     * @param RoverCommandList $commandList
      *
      * @throws Exception\InvalidRoverPositionException
      */
-    public function navigate(RoverCommand $command)
+    public function navigate(RoverCommandList $commandList)
     {
-        $commandMoves = $command->getCommands();
+        $commands = $commandList->getCommands();
 
-        $x = $this->roverPosition->getX();
-        $y = $this->roverPosition->getY();
-
-        foreach ($commandMoves as $command) {
+        foreach ($commands as $command) {
             if ($command == GridConstantsInterface::COMMAND_TURN_LEFT
                 || $command == GridConstantsInterface::COMMAND_TURN_RIGHT) {
                 $this->rotate($command);
+            } else {
+                $this->move($command);
             }
-
-            $direction = $this->roverPosition->getDirection();
-
-
-
-            if ($command == 'f') {
-                switch ($direction) {
-                    case 'n':
-                        $x -= 1;
-                        break;
-                    case 'w':
-                        $y -= 1;
-                        break;
-                    case 's':
-                        $x += 1;
-                        break;
-                    case 'e':
-                        $y += 1;
-                        break;
-                }
-            }
-
-            if ($command == 'b') {
-                switch ($direction) {
-                    case 'n':
-                        $x += 1;
-                        break;
-                    case 'w':
-                        $y += 1;
-                        break;
-                    case 's':
-                        $x -= 1;
-                        break;
-                    case 'e':
-                        $y -= 1;
-                        break;
-                }
-            }
-
-            $this->roverPosition = new RoverPosition($x, $y, $direction);
         }
     }
 
+    /**
+     * @return RoverPosition
+     */
     public function getPosition()
     {
         return $this->roverPosition;
     }
 
     /**
+     * Moves rover.
+     *
+     * @param $command
+     *
+     * @throws Exception\InvalidRoverPositionException
+     */
+    private function move($command)
+    {
+        $direction = $this->roverPosition->getDirection();
+        $x = $this->roverPosition->getX();
+        $y = $this->roverPosition->getY();
+
+        if ($command == GridConstantsInterface::COMMAND_MOVE_FORWARD) {
+            switch ($direction) {
+                case GridConstantsInterface::NORTH:
+                    $x -= 1;
+                    break;
+                case GridConstantsInterface::WEST:
+                    $y -= 1;
+                    break;
+                case GridConstantsInterface::SOUTH:
+                    $x += 1;
+                    break;
+                case GridConstantsInterface::EAST:
+                    $y += 1;
+                    break;
+            }
+        }
+
+        if ($command == GridConstantsInterface::COMMAND_MOVE_BACKWARD) {
+            switch ($direction) {
+                case GridConstantsInterface::NORTH:
+                    $x += 1;
+                    break;
+                case GridConstantsInterface::WEST:
+                    $y += 1;
+                    break;
+                case GridConstantsInterface::SOUTH:
+                    $x -= 1;
+                    break;
+                case GridConstantsInterface::EAST:
+                    $y -= 1;
+                    break;
+            }
+        }
+
+        $this->roverPosition = new RoverPosition(
+            $x,
+            $y,
+            $direction
+        );
+    }
+
+    /**
+     * Rotates rover.
+     *
      * @param $command
      *
      * @throws Exception\InvalidRoverPositionException
@@ -95,38 +127,15 @@ class MarsRover
     {
         $direction = $this->roverPosition->getDirection();
 
-        if ($command == GridConstantsInterface::COMMAND_TURN_LEFT) {
-            switch ($direction) {
-                case GridConstantsInterface::NORTH:
-                    $direction = GridConstantsInterface::WEST;
-                    break;
-                case GridConstantsInterface::WEST:
-                    $direction = GridConstantsInterface::SOUTH;
-                    break;
-                case GridConstantsInterface::SOUTH:
-                    $direction = GridConstantsInterface::EAST;
-                    break;
-                case GridConstantsInterface::EAST:
-                    $direction = GridConstantsInterface::NORTH;
-                    break;
-            }
+        if ($command == GridConstantsInterface::COMMAND_TURN_RIGHT) {
+            $key = array_search($direction, GridConstantsInterface::DIRECTIONS);
+            $direction = GridConstantsInterface::DIRECTIONS[($key + 1) % count(GridConstantsInterface::DIRECTIONS)];
         }
 
-        if ($command == GridConstantsInterface::COMMAND_TURN_RIGHT) {
-            switch ($direction) {
-                case GridConstantsInterface::NORTH:
-                    $direction = GridConstantsInterface::EAST;
-                    break;
-                case GridConstantsInterface::WEST:
-                    $direction = GridConstantsInterface::NORTH;
-                    break;
-                case GridConstantsInterface::SOUTH:
-                    $direction = GridConstantsInterface::WEST;
-                    break;
-                case GridConstantsInterface::EAST:
-                    $direction = GridConstantsInterface::SOUTH;
-                    break;
-            }
+        if ($command == GridConstantsInterface::COMMAND_TURN_LEFT) {
+            $reversedDirections = array_reverse(GridConstantsInterface::DIRECTIONS);
+            $key = array_search($direction, $reversedDirections);
+            $direction = $reversedDirections[($key + 1) % count($reversedDirections)];
         }
 
         $this->roverPosition = new RoverPosition(
